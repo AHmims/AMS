@@ -1,0 +1,4 @@
+/node_modules
+/model/dbOperations.js
+.env
+dev.env

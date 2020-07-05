@@ -1,0 +1,28 @@
+{
+  "name": "AMS",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dbTest": "node model/unlimited_db_works.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AHmims/AMS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AHmims/AMS/issues"
+  },
+  "homepage": "https://github.com/AHmims/AMS#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "dotenv": "^8.2.0",
+    "mysql2": "^2.1.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5"
+  }
+}
