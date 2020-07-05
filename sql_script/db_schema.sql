@@ -5,13 +5,14 @@ drop database ams_db;
 SELECT * FROM mal_genre;
 drop table mal_anime;
 /*   */
+select * from mal_song;
 CREATE TABLE IF NOT EXISTS mal_anime(
 	anime_id INT(11) PRIMARY KEY,
 	anime_name_main CHAR(250), 
     anime_name_other TEXT,
     anime_type CHAR(10) DEFAULT 'TV',
     anime_link CHAR(250),
-    season_id INT(11),
+    season_id CHAR(10),
     KEY FK_SEASON (season_id)
 );
 /*   */
@@ -40,7 +41,6 @@ CREATE TABLE IF NOT EXISTS mal_anime_genre(
     KEY FK_gLINK_GENRE (genre_id)
 );
 /*   */
-drop table mal_anime_song;
 CREATE TABLE IF NOT EXISTS mal_anime_song(
 	ost_type CHAR(3),
 	anime_id INT(11),

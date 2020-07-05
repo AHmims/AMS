@@ -119,7 +119,7 @@ async function scrapAnimes() {
                                 // console.log(animeData);
                                 // INSERT ANIME
                                 let animeExists = await __DB.checkExistance({
-                                    table: 'mal_season',
+                                    table: 'mal_anime',
                                     key: 'anime_id',
                                     value: animeData.id
                                 });
@@ -132,11 +132,13 @@ async function scrapAnimes() {
                                         let imgDownloadResult = await img_download(anime_img_link, animeData.id);
                                         // 
                                         // LINK ANIME TO IT'S GENRES
-                                        anime_genres_array.forEach(async genre => {
-                                            let genreInsertRes = await __DB.insertData(new __CLASSES.mal_anime_genre(animeData.id, genre));
-                                        });
+                                        if (anime_genres_array.length > 0) {
+                                            anime_genres_array.forEach(async genre => {
+                                                let genreInsertRes = await __DB.insertData(new __CLASSES.mal_anime_genre(animeData.id, genre));
+                                            });
+                                        }
                                         // 
-                                        reqOptions.url = animeData.link;
+                                        reqOptions.url = encodeURI(animeData.link);
                                         console.log(`Get data for : ${animeData.id} | ${animeData.name_main}`);
                                         const animeReqBody = await _REQUEST(reqOptions);
                                         console.log(`Getting data done!`);
@@ -159,7 +161,8 @@ async function scrapAnimes() {
                                                 let ost_fullName = ost_fullData.split('"')[1].split('(');
                                                 ost_data.name_eng = ost_fullName[0];
                                                 ost_data.name_jp = ost_fullName.length > 1 ? ost_fullName[1].substring(0, ost_fullName[1].length - 1) : '_';
-                                                ost_data.performer = ost_fullData.split('"')[2].split("by")[1].trimLeft();
+                                                let ost_perfromerData = ost_fullData.split('"')[2].split("by");
+                                                ost_data.performer = ost_perfromerData[ost_perfromerData.length - 1].trimLeft();
                                                 // 
                                                 let {
                                                     affectedRows: songInsertRes,
@@ -225,5 +228,5 @@ async function img_download(url, animeId) {
         }
     });
 }
-scrapAnimes();
-// getGenres();
+// scrapAnimes();
+getGenres();

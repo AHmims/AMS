@@ -13,7 +13,7 @@ async function insertData(data) {
             cnx = await db.connect(),
             res = await cnx.query(req, values);
         cnx.release();
-        console.log(res)
+        // console.log(res)
         return res[0].affectedRows;
     } catch (err) {
         console.error('error :', err);
