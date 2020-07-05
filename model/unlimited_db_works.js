@@ -18,12 +18,12 @@ async function insertData(data) {
         console.error('error :', err);
     }
 }
-// 
-async function checkSeason(name, year) {
+// params = {table : tableName, key : column , value : id}
+async function checkExistance(params) {
     try {
-        let req = `SELECT COUNT(*) AS nb FROM mal_season WHERE season_season = ? AND season_year = ?`,
+        let req = `SELECT COUNT(*) AS nb FROM ${params.table} WHERE ${params.key} = ?`,
             cnx = await db.connect(),
-            res = await cnx.query(req, [name, year]);
+            res = await cnx.query(req, [params.value]);
         cnx.release();
         // 
         return res[0][0].nb > 0 ? true : false;
@@ -71,5 +71,5 @@ function removeLastChar(str) {
 // 
 module.exports = {
     insertData,
-    checkSeason
+    checkExistance
 }

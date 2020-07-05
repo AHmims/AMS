@@ -1,10 +1,10 @@
 class mal_anime {
-    constructor(anime_id, anime_name_jp, anime_name_eng, anime_type, genre_id, season_id) {
+    constructor(anime_id, anime_name_main, anime_name_other, anime_type, anime_link, season_id) {
         this.anime_id = anime_id;
-        this.anime_name_jp = anime_name_jp;
-        this.anime_name_eng = anime_name_eng;
+        this.anime_name_main = anime_name_main;
+        this.anime_name_other = anime_name_other;
         this.anime_type = anime_type;
-        this.genre_id = genre_id;
+        this.anime_link = anime_link;
         this.season_id = season_id;
     }
 }
@@ -26,8 +26,8 @@ class mal_song {
 }
 // 
 class mal_season {
-    constructor(season_season, season_year) {
-        // this.season_id
+    constructor(season_id, season_season, season_year) {
+        this.season_id = season_id;
         this.season_season = season_season;
         this.season_year = season_year;
     }
