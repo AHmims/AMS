@@ -18,6 +18,19 @@ async function insertData(data) {
         console.error('error :', err);
     }
 }
+// 
+async function checkSeason(name, year) {
+    try {
+        let req = `SELECT COUNT(*) AS nb FROM mal_season WHERE season_season = ? AND season_year = ?`,
+            cnx = await db.connect(),
+            res = await cnx.query(req, [name, year]);
+        cnx.release();
+        // 
+        return res[0][0].nb > 0 ? true : false;
+    } catch (err) {
+        console.error('error :', err);
+    }
+}
 //
 //#region HELPER FUNCTIONS
 function getClassValues(data) {
@@ -57,5 +70,6 @@ function removeLastChar(str) {
 //#endregion
 // 
 module.exports = {
-    insertData
+    insertData,
+    checkSeason
 }
