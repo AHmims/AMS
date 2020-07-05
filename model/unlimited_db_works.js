@@ -55,4 +55,7 @@ function removeLastChar(str) {
     return str.substring(0, str.length - 1);
 }
 //#endregion
-getAppUserDataById(1);
+// 
+module.exports = {
+    insertData
+}
