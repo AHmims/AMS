@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS mal_genre(
 );
 /*   */
 CREATE TABLE IF NOT EXISTS mal_song(
-	song_id INT(11) PRIMARY KEY,
+	song_id INT(11) PRIMARY KEY auto_increment,
     song_name_eng CHAR(250),
     song_name_jp CHAR(250),
     song_performer CHAR(250)
@@ -40,7 +40,9 @@ CREATE TABLE IF NOT EXISTS mal_anime_genre(
     KEY FK_gLINK_GENRE (genre_id)
 );
 /*   */
+drop table mal_anime_song;
 CREATE TABLE IF NOT EXISTS mal_anime_song(
+	ost_type CHAR(3),
 	anime_id INT(11),
     song_id INT(11),
 	KEY FK_sLINK_ANIME (anime_id),

@@ -17,8 +17,8 @@ class mal_genre {
 }
 // 
 class mal_song {
-    constructor(song_id, song_name_eng, song_name_jp, song_performer) {
-        this.song_id = song_id;
+    constructor(song_name_eng, song_name_jp, song_performer) {
+        // this.song_id = song_id;
         this.song_name_eng = song_name_eng;
         this.song_name_jp = song_name_jp;
         this.song_performer = song_performer;
@@ -41,7 +41,8 @@ class mal_anime_genre {
 }
 // 
 class mal_anime_song {
-    constructor(anime_id, song_id) {
+    constructor(ost_type, anime_id, song_id) {
+        this.ost_type = ost_type;
         this.anime_id = anime_id;
         this.song_id = song_id;
     }

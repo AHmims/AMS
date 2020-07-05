@@ -58,7 +58,7 @@ async function scrapAnimes() {
     // 
     console.log("Acquiring list of seasons...");
     const seasonsReqBody = await _REQUEST(reqOptions);
-    console.log("List acquired.");
+    console.log("List acquired.\n------");
     const $_seasons = _CHEERIO.load(seasonsReqBody);
     // 
     try {
@@ -118,7 +118,7 @@ async function scrapAnimes() {
                                 animeData.id = animeData.link.split('/')[4];
                                 // console.log(animeData);
                                 // INSERT ANIME
-                                /*let animeExists = await __DB.checkExistance({
+                                let animeExists = await __DB.checkExistance({
                                     table: 'mal_season',
                                     key: 'anime_id',
                                     value: animeData.id
@@ -126,15 +126,57 @@ async function scrapAnimes() {
                                 if (!animeExists) {
                                     let animeInsertRes = await __DB.insertData(new __CLASSES.mal_anime(...Object.values(animeData)));
                                     if (animeInsertRes > 0) {
-                                        anime_genres_array.forEach(genre => {
-                                            let genreInsertRes = await __DB.insertData(new __CLASSES.mal_anime_genre(animeData.id,genre));
+                                        // DOWNLOAD IMAGE
+                                        const anime_img_element = $_stemp(anime_img_block).children('a').first().children('img').first();
+                                        const anime_img_link = ($_stemp(anime_img_element).attr('src') || $_stemp(anime_img_element).attr('data-src'));
+                                        let imgDownloadResult = await img_download(anime_img_link, animeData.id);
+                                        // 
+                                        // LINK ANIME TO IT'S GENRES
+                                        anime_genres_array.forEach(async genre => {
+                                            let genreInsertRes = await __DB.insertData(new __CLASSES.mal_anime_genre(animeData.id, genre));
                                         });
+                                        // 
+                                        reqOptions.url = animeData.link;
+                                        console.log(`Get data for : ${animeData.id} | ${animeData.name_main}`);
+                                        const animeReqBody = await _REQUEST(reqOptions);
+                                        console.log(`Getting data done!`);
+                                        const $_anime = _CHEERIO.load(animeReqBody);
+                                        // 
+                                        const anime_ost_blocks = $_anime('.theme-songs.js-theme-songs');
+                                        for (let ost_block_index = 0; ost_block_index < anime_ost_blocks.length; ost_block_index++) {
+                                            // console.log($_anime(this).hasClass('opnening'));
+                                            let ost_batch_type = $_anime(anime_ost_blocks[ost_block_index]).hasClass('opnening') ? 'op' : 'end';
+                                            // 
+                                            const ost_list = $_anime(anime_ost_blocks[ost_block_index]).find('span');
+                                            for (let ost_index = 0; ost_index < ost_list.length; ost_index++) {
+                                                let ost_data = {
+                                                    name_eng: '_',
+                                                    name_jp: '_',
+                                                    performer: '_'
+                                                }
+                                                // 
+                                                let ost_fullData = $_anime(ost_list[ost_index]).text();
+                                                let ost_fullName = ost_fullData.split('"')[1].split('(');
+                                                ost_data.name_eng = ost_fullName[0];
+                                                ost_data.name_jp = ost_fullName.length > 1 ? ost_fullName[1].substring(0, ost_fullName[1].length - 1) : '_';
+                                                ost_data.performer = ost_fullData.split('"')[2].split("by")[1].trimLeft();
+                                                // 
+                                                let {
+                                                    affectedRows: songInsertRes,
+                                                    insertId: songId
+                                                } = await __DB.insertSong(...Object.values(ost_data));
+                                                // 
+                                                // if (songInsertRes)
+                                                if (songInsertRes > 0) {
+                                                    let songLinkInsertRes = await __DB.insertData(new __CLASSES.mal_anime_song(ost_batch_type, animeData.id, songId));
+                                                    if (songLinkInsertRes > 0)
+                                                        console.log('Done!!\n***');
+                                                    else throw 103;
+                                                } else throw 102;
+                                            }
+                                        }
                                     } else throw 101;
-                                }*/
-                                const anime_img_element = $_stemp(anime_img_block).children('a').first().children('img').first();
-                                const anime_img_link = ($_stemp(anime_img_element).attr('src') || $_stemp(anime_img_element).attr('data-src'));
-                                // let imgDownloadResult = await img_download(anime_img_link, animeData.id);
-                                // console.log(imgDownloadResult);
+                                }
                             }
                         }
                     } else throw {
@@ -149,6 +191,8 @@ async function scrapAnimes() {
         // ERROR CODES
         // 100 : SEASON NOT SAVED
         // 101 : ANIME NOT SAVED
+        // 102 : SONG NOT SAVED
+        // 103 : LINK SONG TO ANIME NOT SAVED
         console.log(err);
     }
 }
@@ -181,6 +225,5 @@ async function img_download(url, animeId) {
         }
     });
 }
-// scrapAnimes();
+scrapAnimes();
 // getGenres();
-const fs = require('fs');

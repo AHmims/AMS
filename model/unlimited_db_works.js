@@ -13,6 +13,7 @@ async function insertData(data) {
             cnx = await db.connect(),
             res = await cnx.query(req, values);
         cnx.release();
+        console.log(res)
         return res[0].affectedRows;
     } catch (err) {
         console.error('error :', err);
@@ -27,6 +28,18 @@ async function checkExistance(params) {
         cnx.release();
         // 
         return res[0][0].nb > 0 ? true : false;
+    } catch (err) {
+        console.error('error :', err);
+    }
+}
+// 
+async function insertSong(name_eng, name_jp, performer) {
+    try {
+        let req = `INSERT INTO mal_song (song_name_eng,song_name_jp,song_performer) VALUES (?,?,?)`,
+            cnx = await db.connect(),
+            res = await cnx.query(req, [name_eng, name_jp, performer]);
+        cnx.release();
+        return res[0];
     } catch (err) {
         console.error('error :', err);
     }
@@ -71,5 +84,6 @@ function removeLastChar(str) {
 // 
 module.exports = {
     insertData,
-    checkExistance
+    checkExistance,
+    insertSong
 }
