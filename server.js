@@ -46,4 +46,28 @@ async function getGenres() {
 // 
 async function scrapAnimes() {
     const startPoint = 'https://myanimelist.net/anime/season/archive';
+    reqOptions.url = startPoint;
+    // 
+    const seasonsReqBody = await _REQUEST(reqOptions);
+    const $_seasons = _CHEERIO.load(seasonsReqBody);
+    // 
+    let loopBreak = true;
+    // 
+    $_seasons('.anime-seasonal-byseason.mt8.mb16 > tbody').first().children('tr').each(function () {
+        $_seasons(this).children('td').each(function () {
+            const seasonText = $_seasons(this).children('a').text().trim();
+            if (seasonText.length > 0) {
+                let seasonData = seasonText.split(" ");
+                // let seasonInsertRes = await __DB.insertData(new __CLASSES.mal_season(seasonData[0], seasonData[1]));
+                console.log(seasonData);
+            } else {
+                loopBreak = false;
+                return false;
+            }
+        });
+        if (!loopBreak)
+            return false;
+    });
 }
+// 
+scrapAnimes();
